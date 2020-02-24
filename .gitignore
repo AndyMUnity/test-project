@@ -1,0 +1,14 @@
+
+BasicUnityProject/Library/
+
+BasicUnityProject/Logs/
+
+BasicUnityProject/Temp/
+
+BasicUnityProject/BasicUnityProject.sln
+
+BasicUnityProject/.idea/
+
+BasicUnityProject/obj/
+
+*.csproj
