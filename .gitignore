@@ -12,3 +12,13 @@ BasicUnityProject/.idea/
 BasicUnityProject/obj/
 
 *.csproj
+
+Library/
+
+Logs/
+
+obj/
+
+.idea/
+
+*.sln
