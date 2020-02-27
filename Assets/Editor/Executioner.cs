@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
+using UnityEngine;
 
 namespace ContinuousIntegration
 {
@@ -11,13 +15,26 @@ namespace ContinuousIntegration
         UnknownError,
         PlayerBuildCanceled,
         PlayerBuildUnknownError,
-        PlayerBuildFailed
+        PlayerBuildFailed,
+        MethodNotFound
     }
     
     public static class BuildPipeline
     {
-        private static string[] args;
-        
+        private static string[] args = null;
+        private static string[] Args => args ?? (args = Environment.GetCommandLineArgs());
+
+        private static bool HasArgument( string arg )
+        {
+            for( int i = 0; i < Args.Length; ++i )
+            {
+                if( Args[i] == arg )
+                    return true;
+            }
+
+            return false;
+        }
+
         private static ExitCode GetExitCode( BuildResult playerBuildResult )
         {
             switch( playerBuildResult )
@@ -63,38 +80,117 @@ namespace ContinuousIntegration
 
         public static void Run()
         {
-            args = System.Environment.GetCommandLineArgs();
-            
-            for (int i = 0; i < args.Length; i++)
+            for (int i = 0; i < Args.Length; i++)
             {
-                if( args[i] == "-buildPlayer" )
-                    BuildPlayer();
-                else if( args[i] == "-buildAssetBundles" )
-                    BuildBundles();
+                switch( Args[i] )
+                {
+                    case "-buildPlayer":
+                        BuildPlayer();
+                        break;
+                    case "-buildAssetBundles":
+                        BuildBundles();
+                        break;
+                }
+            }
+        }
+
+        private static void PreBuild()
+        {
+            for (int i = 0; i < Args.Length; i++)
+            {
+                if( Args[i] != "-executePreBuildMethod" )
+                    continue;
+                ++i;
+                ExecuteMethod( Args[i] );
             }
         }
         
-        private static void BuildPlayer()
+        public static void BuildPlayer()
         {
-            ExitCode code = ExitCode.UnknownError;
-
+            PreBuild();
+            
+            // setup the build options from arguments
             BuildPlayerOptions options = InitialOptions();
-            for (int i = 0; i < args.Length; i++)
+            for (int i = 0; i < Args.Length; i++)
             {
-                if( args[i] == "-development" )
-                    options.options |= BuildOptions.Development;
-                else if( args[i] == "-buildPath" )
+                switch( Args[i] )
                 {
-                    ++i;
-                    options.locationPathName = args[i];
+                    case "-locationPathName":
+                        ++i;
+                        options.locationPathName = Args[i];
+                        break;
+                    case "-development":
+                        options.options |= BuildOptions.Development;
+                        break;
+                    case "-autoRunPlayer":
+                        options.options |= BuildOptions.AutoRunPlayer;
+                        break;
+                    case "-allowDebugging":
+                        options.options |= BuildOptions.AllowDebugging;
+                        break;
                 }
             }
 
             BuildReport r = UnityEditor.BuildPipeline.BuildPlayer( options );
-            code = GetExitCode( r.summary.result );
-            EditorApplication.Exit( (int)code );
+            PostBuild();
+            EditorApplication.Exit( (int)GetExitCode( r.summary.result ) );
         }
-        
+
+        private static void PostBuild()
+        {
+            for (int i = 0; i < Args.Length; i++)
+            {
+                if( Args[i] == "-executePostBuildMethod" )
+                {
+                    ++i;
+                    ExecuteMethod( Args[i] );
+                }
+            }
+        }
+
+        private static void ExecuteMethod( string method )
+        {
+            string[] path = method.Split( '.' );
+            if( path.Length < 2 )
+            {
+                Debug.LogError( "Could not find method [" + method + "], Method path is too short" );
+                if( HasArgument( "-noErrorOnMethodNotFound" ) )
+                    return;
+                EditorApplication.Exit( (int)ExitCode.MethodNotFound );
+            }
+            
+            StringBuilder b = new StringBuilder(method.Length-path[path.Length-1].Length);
+            for( int i = 0; i < path.Length - 1; ++i )
+            {
+                b.Append( path[i] );
+                if( i < path.Length - 2 )
+                    b.Append( '.' );
+            }
+
+            string classPath = b.ToString();
+            
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach( Assembly assembly in assemblies )
+            {
+                foreach( Type type in assembly.GetTypes() )
+                {
+                    if( type.FullName.EndsWith( classPath ) )
+                    {
+                        MethodInfo m = type.GetMethod( path[path.Length - 1], BindingFlags.Static | BindingFlags.Public );
+                        if( m == null )
+                        {
+                            Debug.LogError( "Could not find method [" + method + "], Method not found in Type" );
+                            if( HasArgument( "-noErrorOnMethodNotFound" ) )
+                                return;
+                            EditorApplication.Exit( (int)ExitCode.MethodNotFound );
+                        }
+
+                        m.Invoke( null, null );
+                    }
+                }
+            }
+        }
+
         private static void BuildBundles()
         {
             ExitCode code = ExitCode.UnknownError;
