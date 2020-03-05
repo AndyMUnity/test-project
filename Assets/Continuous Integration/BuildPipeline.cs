@@ -257,7 +257,7 @@ namespace ContinuousIntegration
             BuildScript.buildCompleted += result =>
             {
                 if( !string.IsNullOrEmpty( result.Error ) )
-                    code = ExitCode.PlayerBuildFailed;
+                    code = ExitCode.AddressablesBuildFailed;
                 else
                     code = ExitCode.Success;
             };
@@ -276,17 +276,22 @@ namespace ContinuousIntegration
             BuildScript.buildCompleted += result =>
             {
                 if( !string.IsNullOrEmpty( result.Error ) )
-                    code = ExitCode.PlayerBuildFailed;
+                    code = ExitCode.AddressablesBuildFailed;
+                else
+                    code = ExitCode.Success;
             };
             
             // find out what version we are updating
             
             // find where the 
-            var state = ContentUpdateScript.LoadContentState( "" );
+            var state = ContentUpdateScript.LoadContentState( "Artifacts/addressables_content_state.bin" );
+            if( state != null )
+                Debug.Log( "State file found, " + state.playerVersion );
+            code = state == null ? ExitCode.AddressablesContentFileNotFound : ExitCode.Success;
             
-            List<AddressableAssetEntry> entries = ContentUpdateScript.GatherModifiedEntries( AddressableAssetSettingsDefaultObject.Settings, "" );
-            ContentUpdateScript.CreateContentUpdateGroup( AddressableAssetSettingsDefaultObject.Settings, entries, "Update Group" );
-            ContentUpdateScript.BuildContentUpdate( AddressableAssetSettingsDefaultObject.Settings, "" );
+            // List<AddressableAssetEntry> entries = ContentUpdateScript.GatherModifiedEntries( AddressableAssetSettingsDefaultObject.Settings, "" );
+            // ContentUpdateScript.CreateContentUpdateGroup( AddressableAssetSettingsDefaultObject.Settings, entries, "Update Group" );
+            // ContentUpdateScript.BuildContentUpdate( AddressableAssetSettingsDefaultObject.Settings, "" );
             
             // TODO edit catalog name.
             
