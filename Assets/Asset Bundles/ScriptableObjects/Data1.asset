@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 131ec153cc79d4f129c5da4b34f60461, type: 3}
   m_Name: Data1
   m_EditorClassIdentifier: 
-  objectName: Edited
+  objectName: White
   thisColor: {r: 1, g: 1, b: 1, a: 1}
