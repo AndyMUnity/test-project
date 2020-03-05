@@ -298,6 +298,11 @@ namespace ContinuousIntegration
             code = state == null ? ExitCode.AddressablesContentFileNotFound : ExitCode.Success;
             
             List<AddressableAssetEntry> entries = ContentUpdateScript.GatherModifiedEntries( AddressableAssetSettingsDefaultObject.Settings, statePath );
+            foreach( AddressableAssetEntry assetEntry in entries )
+            {
+                Debug.Log( "Entry found to be moved - " + assetEntry.address );
+            }
+            Debug.Log( "Creating update group" );
             ContentUpdateScript.CreateContentUpdateGroup( AddressableAssetSettingsDefaultObject.Settings, entries, "Update Group" );
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
