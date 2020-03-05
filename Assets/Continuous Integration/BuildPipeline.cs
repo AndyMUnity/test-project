@@ -30,6 +30,14 @@ namespace ContinuousIntegration
         private static string[] args = null;
         private static string[] Args => args ?? (args = Environment.GetCommandLineArgs());
         
+        [MenuItem("Test/Update Groups")]
+        public static void UpdateGroups()
+        {
+            string statePath = "Artifacts/addressables_content_state.bin";
+            List<AddressableAssetEntry> entries = ContentUpdateScript.GatherModifiedEntries( AddressableAssetSettingsDefaultObject.Settings, statePath );
+            ContentUpdateScript.CreateContentUpdateGroup( AddressableAssetSettingsDefaultObject.Settings, entries, "Update Group" );
+        }
+        
         private static bool HasArgument( string arg )
         {
             for( int i = 0; i < Args.Length; ++i )
@@ -291,12 +299,15 @@ namespace ContinuousIntegration
             
             List<AddressableAssetEntry> entries = ContentUpdateScript.GatherModifiedEntries( AddressableAssetSettingsDefaultObject.Settings, statePath );
             ContentUpdateScript.CreateContentUpdateGroup( AddressableAssetSettingsDefaultObject.Settings, entries, "Update Group" );
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             ContentUpdateScript.BuildContentUpdate( AddressableAssetSettingsDefaultObject.Settings, statePath );
             
             // TODO edit catalog name.
             
             ExitOnError( code );
         }
+
+        
 
         private static void ExitOnError(ExitCode code)
         {
