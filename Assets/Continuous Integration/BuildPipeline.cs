@@ -124,6 +124,12 @@ namespace ContinuousIntegration
                     case "-buildAssetBundles":
                         BuildBundles();
                         break;
+                    case "-addressablesReleaseBuild":
+                        NewAddressablesBuild();
+                        break;
+                    case "-addressablesUpdateBuild":
+                        UpdateAddressablesBuild();
+                        break;
                 }
             }
         }
