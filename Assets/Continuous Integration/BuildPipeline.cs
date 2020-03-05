@@ -140,7 +140,8 @@ namespace ContinuousIntegration
                 }
             }
             
-            EditorApplication.Exit( 0 );
+            if( HasArgument( "-batchmode" ) )
+                EditorApplication.Exit( 0 );
         }
 
         private static void PreBuild()
@@ -183,8 +184,7 @@ namespace ContinuousIntegration
             BuildReport r = UnityEditor.BuildPipeline.BuildPlayer( options );
             PostBuild();
             ExitCode code = GetExitCode( r.summary.result );
-            if( code != ExitCode.Success )
-                EditorApplication.Exit( (int)code );
+            ExitOnError( code );
         }
 
         private static void PostBuild()
@@ -207,7 +207,7 @@ namespace ContinuousIntegration
                 Debug.LogError( "Could not find method [" + method + "], Method path is too short" );
                 if( HasArgument( "-noErrorOnMethodNotFound" ) )
                     return;
-                EditorApplication.Exit( (int)ExitCode.MethodNotFound );
+                ExitOnError( ExitCode.MethodNotFound );
             }
             
             StringBuilder b = new StringBuilder(method.Length-path[path.Length-1].Length);
@@ -233,7 +233,7 @@ namespace ContinuousIntegration
                             Debug.LogError( "Could not find method [" + method + "], Method not found in Type" );
                             if( HasArgument( "-noErrorOnMethodNotFound" ) )
                                 return;
-                            EditorApplication.Exit( (int)ExitCode.MethodNotFound );
+                            ExitOnError( ExitCode.MethodNotFound );
                         }
 
                         m.Invoke( null, null );
@@ -246,8 +246,7 @@ namespace ContinuousIntegration
         {
             ExitCode code = ExitCode.UnknownError;
             
-            if( code != ExitCode.Success )
-                EditorApplication.Exit( (int)code );
+            ExitOnError( code );
         }
         
         [MenuItem("Addressables/New Build")]
@@ -259,13 +258,14 @@ namespace ContinuousIntegration
             {
                 if( !string.IsNullOrEmpty( result.Error ) )
                     code = ExitCode.PlayerBuildFailed;
+                else
+                    code = ExitCode.Success;
             };
             AddressableAssetSettings.BuildPlayerContent();
             
             // TODO edit our catalog name
-            
-            if( code != ExitCode.Success )
-                EditorApplication.Exit( (int)code );
+
+            ExitOnError(code);
         }
 
         [MenuItem("Addressables/Update Build")]
@@ -290,8 +290,18 @@ namespace ContinuousIntegration
             
             // TODO edit catalog name.
             
+            ExitOnError( code );
+        }
+
+        private static void ExitOnError(ExitCode code)
+        {
             if( code != ExitCode.Success )
-                EditorApplication.Exit( (int)code );
+            {
+                if( HasArgument( "-batchmode" ) )
+                    EditorApplication.Exit( (int) code );
+                else
+                    Debug.LogError( "Error with code - " + code );
+            }
         }
     }
 }
