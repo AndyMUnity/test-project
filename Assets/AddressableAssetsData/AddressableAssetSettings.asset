@@ -13,20 +13,21 @@ MonoBehaviour:
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
   m_DefaultGroup: 81d6ada23a3594b26ba1e9c8d3139962
-  m_BuildRemoteCatalog: 0
+  m_BuildRemoteCatalog: 1
   m_DisableCatalogUpdateOnStart: 0
   m_UniqueBundleIds: 0
   m_RemoteCatalogBuildPath:
-    m_Id: ecbb064fe3ac34af299663ecd71c875d
+    m_Id: 23ac9388790b541edaaa3ad76cb8edef
   m_RemoteCatalogLoadPath:
-    m_Id: c8fd2576fa8584bce95214433fd3f475
-  m_overridePlayerVersion: 
+    m_Id: 4e5e0bc548f6b44c1a64bd03aa57c4c3
+  m_overridePlayerVersion: Addressables
   m_GroupAssets:
   - {fileID: 11400000, guid: 76556fcf37a6e45e1be6bfe73ce5433c, type: 2}
   - {fileID: 11400000, guid: c167198b2a4714f10880adc43948e697, type: 2}
   - {fileID: 11400000, guid: 114c86810bbf145ea9afa158b5c75fbc, type: 2}
   - {fileID: 11400000, guid: ef94c7d241d0f430a9f56b9fbb163cca, type: 2}
   - {fileID: 11400000, guid: a4dee346663c14c05b9749a4a4439cff, type: 2}
+  - {fileID: 11400000, guid: 3e122695f099841be99af78718d97742, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -48,6 +49,10 @@ MonoBehaviour:
         m_Value: ServerData/[BuildTarget]
       - m_Id: c8fd2576fa8584bce95214433fd3f475
         m_Value: http://localhost/[BuildTarget]
+      - m_Id: 23ac9388790b541edaaa3ad76cb8edef
+        m_Value: ServerData/[BuildTarget]v[UnityEngine.Application.version]
+      - m_Id: 4e5e0bc548f6b44c1a64bd03aa57c4c3
+        m_Value: http://localhost/[BuildTarget]v{UnityEngine.Application.version}
     m_ProfileEntryNames:
     - m_Id: b87a85c2b3ee34340be30c644d2f0b73
       m_Name: BuildTarget
@@ -63,6 +68,12 @@ MonoBehaviour:
       m_InlineUsage: 0
     - m_Id: c8fd2576fa8584bce95214433fd3f475
       m_Name: RemoteLoadPath
+      m_InlineUsage: 0
+    - m_Id: 23ac9388790b541edaaa3ad76cb8edef
+      m_Name: CatalogBuildPath
+      m_InlineUsage: 0
+    - m_Id: 4e5e0bc548f6b44c1a64bd03aa57c4c3
+      m_Name: CatalogLoadPath
       m_InlineUsage: 0
     m_ProfileVersion: 1
   m_LabelTable:
