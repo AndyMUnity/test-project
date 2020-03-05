@@ -24,3 +24,7 @@ obj/
 *.sln
 
 Temp/
+
+Assets/AddressableAssetsData/OSX/
+
+Assets/AddressableAssetsData/OSX.meta

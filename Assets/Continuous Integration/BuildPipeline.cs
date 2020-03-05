@@ -112,6 +112,13 @@ namespace ContinuousIntegration
             };
         }
 
+        [MenuItem("Test/Build All")]
+        public static void TestRun()
+        {
+            NewAddressablesBuild();
+            BuildPlayer();
+        }
+
         public static void Run()
         {
             for (int i = 0; i < Args.Length; i++)
@@ -132,6 +139,8 @@ namespace ContinuousIntegration
                         break;
                 }
             }
+            
+            EditorApplication.Exit( 0 );
         }
 
         private static void PreBuild()
@@ -173,7 +182,9 @@ namespace ContinuousIntegration
 
             BuildReport r = UnityEditor.BuildPipeline.BuildPlayer( options );
             PostBuild();
-            EditorApplication.Exit( (int)GetExitCode( r.summary.result ) );
+            ExitCode code = GetExitCode( r.summary.result );
+            if( code != ExitCode.Success )
+                EditorApplication.Exit( (int)code );
         }
 
         private static void PostBuild()
@@ -234,7 +245,9 @@ namespace ContinuousIntegration
         private static void BuildBundles()
         {
             ExitCode code = ExitCode.UnknownError;
-            EditorApplication.Exit( (int)code );
+            
+            if( code != ExitCode.Success )
+                EditorApplication.Exit( (int)code );
         }
         
         [MenuItem("Addressables/New Build")]
@@ -251,7 +264,8 @@ namespace ContinuousIntegration
             
             // TODO edit our catalog name
             
-            EditorApplication.Exit( (int)code );
+            if( code != ExitCode.Success )
+                EditorApplication.Exit( (int)code );
         }
 
         [MenuItem("Addressables/Update Build")]
@@ -276,7 +290,8 @@ namespace ContinuousIntegration
             
             // TODO edit catalog name.
             
-            EditorApplication.Exit( (int)code );
+            if( code != ExitCode.Success )
+                EditorApplication.Exit( (int)code );
         }
     }
 }
