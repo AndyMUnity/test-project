@@ -22,3 +22,5 @@ obj/
 .idea/
 
 *.sln
+
+Temp/

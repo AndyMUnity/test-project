@@ -4,7 +4,11 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Build;
+using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.Build.Reporting;
+using UnityEditor.Experimental;
 using UnityEngine;
 
 namespace ContinuousIntegration
@@ -16,14 +20,16 @@ namespace ContinuousIntegration
         PlayerBuildCanceled,
         PlayerBuildUnknownError,
         PlayerBuildFailed,
-        MethodNotFound
+        MethodNotFound,
+        AddressablesBuildFailed,
+        AddressablesContentFileNotFound,
     }
     
     public static class BuildPipeline
     {
         private static string[] args = null;
         private static string[] Args => args ?? (args = Environment.GetCommandLineArgs());
-
+        
         private static bool HasArgument( string arg )
         {
             for( int i = 0; i < Args.Length; ++i )
@@ -33,6 +39,34 @@ namespace ContinuousIntegration
             }
 
             return false;
+        }
+
+        [InitializeOnLoadMethod]
+        public static void BuildMenuOverride()
+        {
+            BuildPlayerWindow.RegisterBuildPlayerHandler( BuildAddressablesBeforePlayer );
+        }
+
+        private static void BuildAddressablesBeforePlayer( BuildPlayerOptions options )
+        {
+            bool addressablesSuccess = true;
+            // do stuff outside of the build Process here - here I build AssetBundles as an example
+            BuildScript.buildCompleted += result =>
+            {
+                if( !string.IsNullOrEmpty( result.Error ) )
+                    addressablesSuccess = false;
+            };
+            AddressableAssetSettings.BuildPlayerContent();
+            
+            if( addressablesSuccess )
+            {
+                BuildReport r = UnityEditor.BuildPipeline.BuildPlayer( options );
+                Debug.Log( r.summary.result );
+            }
+            else
+            {
+                Debug.LogError( "Failed to Setup Addressables build" );
+            }
         }
 
         private static ExitCode GetExitCode( BuildResult playerBuildResult )
@@ -194,6 +228,48 @@ namespace ContinuousIntegration
         private static void BuildBundles()
         {
             ExitCode code = ExitCode.UnknownError;
+            EditorApplication.Exit( (int)code );
+        }
+        
+        [MenuItem("Addressables/New Build")]
+        private static void NewAddressablesBuild()
+        {
+            ExitCode code = ExitCode.UnknownError;
+
+            BuildScript.buildCompleted += result =>
+            {
+                if( !string.IsNullOrEmpty( result.Error ) )
+                    code = ExitCode.PlayerBuildFailed;
+            };
+            AddressableAssetSettings.BuildPlayerContent();
+            
+            // TODO edit our catalog name
+            
+            EditorApplication.Exit( (int)code );
+        }
+
+        [MenuItem("Addressables/Update Build")]
+        private static void UpdateAddressablesBuild()
+        {
+            ExitCode code = ExitCode.UnknownError;
+
+            BuildScript.buildCompleted += result =>
+            {
+                if( !string.IsNullOrEmpty( result.Error ) )
+                    code = ExitCode.PlayerBuildFailed;
+            };
+            
+            // find out what version we are updating
+            
+            // find where the 
+            var state = ContentUpdateScript.LoadContentState( "" );
+            
+            List<AddressableAssetEntry> entries = ContentUpdateScript.GatherModifiedEntries( AddressableAssetSettingsDefaultObject.Settings, "" );
+            ContentUpdateScript.CreateContentUpdateGroup( AddressableAssetSettingsDefaultObject.Settings, entries, "Update Group" );
+            ContentUpdateScript.BuildContentUpdate( AddressableAssetSettingsDefaultObject.Settings, "" );
+            
+            // TODO edit catalog name.
+            
             EditorApplication.Exit( (int)code );
         }
     }

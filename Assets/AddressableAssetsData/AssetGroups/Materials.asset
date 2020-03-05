@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Materials
+  m_EditorClassIdentifier: 
+  m_GroupName: Materials
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 592546d15bbb74c4cb4bc5c16201aab2
+  m_SerializeEntries:
+  - m_GUID: 293ba1bd05aad4add9550d2fb1e86ab2
+    m_Address: Assets/Asset Bundles/Materials/mat_darkgreen256.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 5b97644666bce41a59c54d90e52e177f
+    m_Address: Assets/Asset Bundles/Materials/mat_brightOrange256.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 6ea387c1d2bf74718bb0d7f312d8d974
+    m_Address: Assets/Asset Bundles/Materials/mat_creme256.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: d322d8bbf38bf440883d9a4f8e54fa79
+    m_Address: Assets/Asset Bundles/Materials/mat_black256.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: d97214d7c8aca4f6ab592e82b1916d1c
+    m_Address: Assets/Asset Bundles/Materials/mat_darkred256.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: e082ba981069f45168d167176de6a269
+    m_Address: Assets/Asset Bundles/Materials/mat_blue256.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: aafb29772b1b1458caa60d490d1bc07d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: e9c1b33f87ea34ec39667bf3f3069d36, type: 2}
+    - {fileID: 11400000, guid: 1c07ed35ee35349dcb15658f4ea26625, type: 2}
