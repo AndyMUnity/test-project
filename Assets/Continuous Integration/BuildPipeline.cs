@@ -299,6 +299,7 @@ namespace ContinuousIntegration
             
             List<AddressableAssetEntry> entries = ContentUpdateScript.GatherModifiedEntries( AddressableAssetSettingsDefaultObject.Settings, statePath );
             ContentUpdateScript.CreateContentUpdateGroup( AddressableAssetSettingsDefaultObject.Settings, entries, "Update Group" );
+            AssetDatabase.SaveAssets();
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             ContentUpdateScript.BuildContentUpdate( AddressableAssetSettingsDefaultObject.Settings, statePath );
             
