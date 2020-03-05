@@ -282,16 +282,16 @@ namespace ContinuousIntegration
             };
             
             // find out what version we are updating
-            
-            // find where the 
-            var state = ContentUpdateScript.LoadContentState( "Artifacts/addressables_content_state.bin" );
+
+            string statePath = "Artifacts/addressables_content_state.bin";
+            var state = ContentUpdateScript.LoadContentState( statePath );
             if( state != null )
                 Debug.Log( "State file found, " + state.playerVersion );
             code = state == null ? ExitCode.AddressablesContentFileNotFound : ExitCode.Success;
             
-            // List<AddressableAssetEntry> entries = ContentUpdateScript.GatherModifiedEntries( AddressableAssetSettingsDefaultObject.Settings, "" );
-            // ContentUpdateScript.CreateContentUpdateGroup( AddressableAssetSettingsDefaultObject.Settings, entries, "Update Group" );
-            // ContentUpdateScript.BuildContentUpdate( AddressableAssetSettingsDefaultObject.Settings, "" );
+            List<AddressableAssetEntry> entries = ContentUpdateScript.GatherModifiedEntries( AddressableAssetSettingsDefaultObject.Settings, statePath );
+            ContentUpdateScript.CreateContentUpdateGroup( AddressableAssetSettingsDefaultObject.Settings, entries, "Update Group" );
+            ContentUpdateScript.BuildContentUpdate( AddressableAssetSettingsDefaultObject.Settings, statePath );
             
             // TODO edit catalog name.
             
